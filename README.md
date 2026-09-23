@@ -1,8 +1,8 @@
 # weather-mcp (.NET)
 
-A console-based (stdio) MCP server, written in C#/.NET 8, exposing weather
-tools backed by the free [Open-Meteo](https://open-meteo.com/) API. No API
-key required.
+An HTTP stream-based MCP server, written in C#/.NET 8, exposing weather tools
+backed by the free [Open-Meteo](https://open-meteo.com/) API. No API key
+required.
 
 Uses the official [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk)
 (`ModelContextProtocol` on NuGet).
@@ -21,7 +21,7 @@ Uses the official [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sd
 ```
 weather-mcp-dotnet/
 ├── WeatherMcp.csproj
-├── Program.cs           # host setup, stdio transport wiring
+├── Program.cs           # host setup, HTTP transport wiring
 ├── WeatherTools.cs       # the four MCP tools
 ├── OpenMeteoClient.cs    # thin HTTP wrapper around Open-Meteo
 └── WeatherCodes.cs       # WMO weather-code -> description lookup
@@ -35,54 +35,31 @@ Requires the .NET 8 SDK (you just installed this).
 cd weather-mcp-dotnet
 dotnet restore
 dotnet build
-dotnet run
+dotnet run --urls http://localhost:3001
 ```
 
-Running it directly will sit waiting on stdin/stdout for MCP JSON-RPC
-messages — that's expected. It's meant to be launched by an MCP client, not
-used interactively on its own.
+The MCP streamable HTTP endpoint is available at
+`http://localhost:3001/mcp`.
 
 ## Test with MCP Inspector
 
 ```bash
-npx @modelcontextprotocol/inspector dotnet run --project weather-mcp-dotnet
+npx @modelcontextprotocol/inspector
 ```
 
-This opens a browser UI where you can call each tool manually and inspect
-the JSON responses.
+Enter `http://localhost:3001/mcp` as the MCP server URL in the Inspector.
 
-## Use with Claude Desktop
+## Use with an HTTP MCP client
 
-First publish a standalone build so Claude Desktop doesn't need `dotnet run`
-to resolve the project each time:
+Start the server, then configure an HTTP MCP client with this URL:
 
 ```bash
-dotnet publish -c Release -o ./publish
+http://localhost:3001/mcp
 ```
-
-Then add to `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "weather": {
-      "command": "/absolute/path/to/weather-mcp-dotnet/publish/weather-mcp"
-    }
-  }
-}
-```
-
-(On Windows the binary will be `weather-mcp.exe`.)
-
-Restart Claude Desktop and the weather tools will show up in the tool list.
 
 ## Notes
 
-- All logging is routed to **stderr** (`LogToStandardErrorThreshold`), since
-  stdio MCP servers use stdout exclusively for the JSON-RPC protocol stream
-  — writing a stray `Console.WriteLine` to stdout will corrupt it.
 - No API key needed — Open-Meteo's free tier is used for geocoding,
   forecast, and air-quality endpoints.
-- Targets `ModelContextProtocol` 1.3.0 (the current stable release as of
-  writing). If a newer version is out when you build this, `dotnet add
-  package ModelContextProtocol` will pull the latest automatically.
+- The server listens on the default ASP.NET Core URL unless overridden with
+  `--urls` or the `ASPNETCORE_URLS` environment variable.

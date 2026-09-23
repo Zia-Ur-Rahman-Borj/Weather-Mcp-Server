@@ -1,21 +1,20 @@
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ModelContextProtocol.AspNetCore;
 using WeatherMcp;
 
-var builder = Host.CreateApplicationBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-// MCP over stdio talks JSON-RPC on stdout, so all logs MUST go to stderr
-// or they'll corrupt the protocol stream.
 builder.Logging.AddConsole(options =>
 {
-    options.LogToStandardErrorThreshold = LogLevel.Trace;
+    options.LogToStandardErrorThreshold = LogLevel.Information;
 });
 
 builder.Services
     .AddMcpServer()
-    .WithStdioServerTransport()
+    .WithHttpTransport()
     .WithToolsFromAssembly();
 
 // Shared HttpClient for all Open-Meteo calls (free API, no key required).
@@ -28,4 +27,8 @@ builder.Services.AddSingleton(_ =>
 
 builder.Services.AddSingleton<OpenMeteoClient>();
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+app.MapMcp("/mcp");
+app.MapGet("/status", () => "Hello from WeatherMCP! Visit /mcp for the MCP server.");
+
+await app.RunAsync();
