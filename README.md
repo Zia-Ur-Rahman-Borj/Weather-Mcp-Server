@@ -8,6 +8,7 @@ Uses the official [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sd
 (`ModelContextProtocol` on NuGet).
 
 
+
 ## Tools
 
 | Tool | Description |
