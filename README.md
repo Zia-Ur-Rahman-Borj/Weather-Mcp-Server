@@ -7,6 +7,7 @@ required.
 Uses the official [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sdk)
 (`ModelContextProtocol` on NuGet).
 
+
 ## Tools
 
 | Tool | Description |
