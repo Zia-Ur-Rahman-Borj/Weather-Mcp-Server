@@ -1,6 +1,6 @@
 # weather-mcp (.NET)
 
-An HTTP stream-based MCP server, written in C#/.NET 8, exposing weather tools
+A Streamable HTTP MCP server, written in C#/.NET 8, exposing weather tools
 backed by the free [Open-Meteo](https://open-meteo.com/) API. No API key
 required.
 
@@ -38,8 +38,9 @@ dotnet build
 dotnet run --urls http://localhost:3001
 ```
 
-The MCP streamable HTTP endpoint is available at
-`http://localhost:3001/mcp`.
+The MCP Streamable HTTP endpoint is available at
+`http://localhost:3001/mcp`. The server also exposes a simple status check at
+`http://localhost:3001/status`.
 
 ## Test with MCP Inspector
 
@@ -47,9 +48,10 @@ The MCP streamable HTTP endpoint is available at
 npx @modelcontextprotocol/inspector
 ```
 
-Enter `http://localhost:3001/mcp` as the MCP server URL in the Inspector.
+Select Streamable HTTP as the transport and enter
+`http://localhost:3001/mcp` as the MCP server URL in the Inspector.
 
-## Use with an HTTP MCP client
+## Use with a Streamable HTTP MCP client
 
 Start the server, then configure an HTTP MCP client with this URL:
 
