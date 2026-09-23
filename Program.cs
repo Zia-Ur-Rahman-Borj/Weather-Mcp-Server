@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ModelContextProtocol.AspNetCore;
 using WeatherMcp;
 
 var builder = WebApplication.CreateBuilder(args);
