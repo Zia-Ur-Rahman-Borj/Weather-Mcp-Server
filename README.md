@@ -9,6 +9,7 @@ Uses the official [MCP C# SDK](https://github.com/modelcontextprotocol/csharp-sd
 
 ## Tools
 
+
 | Tool | Description |
 |---|---|
 | `weather_geocode_location` | Look up coordinates/region for a place name |
